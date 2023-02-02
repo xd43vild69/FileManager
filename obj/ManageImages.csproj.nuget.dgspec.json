@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\dev\\manageimages\\ManageImages\\ManageImages.csproj": {}
+    "C:\\dev\\manageimages\\ManageImages\\FileManager\\ManageImages.csproj": {}
   },
   "projects": {
-    "C:\\dev\\manageimages\\ManageImages\\ManageImages.csproj": {
+    "C:\\dev\\manageimages\\ManageImages\\FileManager\\ManageImages.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\dev\\manageimages\\ManageImages\\ManageImages.csproj",
+        "projectUniqueName": "C:\\dev\\manageimages\\ManageImages\\FileManager\\ManageImages.csproj",
         "projectName": "ManageImages",
-        "projectPath": "C:\\dev\\manageimages\\ManageImages\\ManageImages.csproj",
+        "projectPath": "C:\\dev\\manageimages\\ManageImages\\FileManager\\ManageImages.csproj",
         "packagesPath": "C:\\Users\\D13\\.nuget\\packages\\",
-        "outputPath": "C:\\dev\\manageimages\\ManageImages\\obj\\",
+        "outputPath": "C:\\dev\\manageimages\\ManageImages\\FileManager\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\D13\\AppData\\Roaming\\NuGet\\NuGet.Config"

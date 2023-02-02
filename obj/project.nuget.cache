@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "o5SeTE8wr1yFW2dXcvK6vcNgEaEQz9qhzGdbuUE9VKIE+wOjhO+5v/yPogt50Y6Cr8GnEq+ZlHiek44VaDJJnA==",
+  "dgSpecHash": "gLoole32+OJFkFLEjDk7DZHiyywBHAI262meCdh0j3vLunkxKhR9jQkLiqRLaqPIjoictpPU+g5QzBvQDhCoEw==",
   "success": true,
-  "projectFilePath": "C:\\dev\\manageimages\\ManageImages\\ManageImages.csproj",
+  "projectFilePath": "C:\\dev\\manageimages\\ManageImages\\FileManager\\ManageImages.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\D13\\.nuget\\packages\\metadataextractor\\2.7.2\\metadataextractor.2.7.2.nupkg.sha512",
     "C:\\Users\\D13\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
