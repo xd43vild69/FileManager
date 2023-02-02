@@ -57,7 +57,7 @@ public class ImageManager
             List<FileInfo> files = new List<FileInfo>();
             files.AddRange(directoryInfo.GetFiles());
 
-            IEnumerable<FileInfo> filesSorted = files.OrderByDescending(x => x.LastWriteTime).ToList();
+            IEnumerable<FileInfo> filesSorted = files.OrderBy(x => x.LastWriteTime).ToList();
 
             if (filesSorted.Count() == 0) return;
 
