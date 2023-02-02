@@ -10,6 +10,8 @@ public class ImageManager
     const string pathImages = @"C:\Users\D13\Desktop\ImagesTest\";
     const string imageName = "img";
     const string folderOutput = "folder1";
+    const string path = @$"{pathImages}";
+    const string path2 = @$"{pathImages}{folderOutput}\";
 
     public void GetAllImages()
     {
@@ -33,15 +35,11 @@ public class ImageManager
         }
     }
 
-
-
     public void MoveImages()
     {
-        string path = @$"{pathImages}";
-        string path2 = @$"{pathImages}{folderOutput}\";
+
         try
         {
-
             string[] filePaths = Directory.GetFiles(path, "*.jpg");
             var counter = 1;
 
