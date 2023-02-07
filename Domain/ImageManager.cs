@@ -2,9 +2,6 @@ using Model;
 using MetadataExtractor;
 using Directory = System.IO.Directory;
 using System.Text.RegularExpressions;
-using Microsoft.Extensions.Configuration;
-
-using Microsoft.Extensions.Configuration;
 
 namespace Domain;
 

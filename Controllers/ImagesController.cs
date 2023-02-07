@@ -15,11 +15,18 @@ public class ImageController : ControllerBase
         ImageManager = imageManager;
     }
 
+    [HttpPost(Name = "MoveImages")]
+    public IEnumerable<ImageFile> Post()
+    {
+        var ImageFiles = new List<ImageFile>();
+        ImageManager.MoveImages();
+        return ImageFiles;
+    }
+
 
     [HttpGet(Name = "GetImages")]
     public IEnumerable<ImageFile> Get()
     {
-        //TODO: Dependecy injection
         var ImageFiles = new List<ImageFile>();
         ImageManager.MoveImages();
         return ImageFiles;
