@@ -8,16 +8,20 @@ namespace ManageImages.Controllers;
 [Route("[controller]")]
 public class ImageController : ControllerBase
 {
+    public IImageManager ImageManager { get; set; }
    
+    public ImageController(IImageManager imageManager)
+    {
+        ImageManager = imageManager;
+    }
+
 
     [HttpGet(Name = "GetImages")]
     public IEnumerable<ImageFile> Get()
     {
         //TODO: Dependecy injection
-
-        var FileManager = new ImageManager();
         var ImageFiles = new List<ImageFile>();
-        FileManager.MoveImages();
+        ImageManager.MoveImages();
         return ImageFiles;
     }
 }
