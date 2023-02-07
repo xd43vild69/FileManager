@@ -2,3 +2,4 @@
 /bin/Debug
 /obj
 /obj/Debug/net6.0/staticwebassets
+staticwebassets.pack.sentinel
