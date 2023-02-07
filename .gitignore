@@ -4,4 +4,4 @@
 /obj/Debug/net6.0/staticwebassets
 staticwebassets.pack.sentinel
 obj/staticwebassets.pack.sentinel
-/obj/*
+obj/*
