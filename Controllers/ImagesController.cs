@@ -15,7 +15,15 @@ public class ImageController : ControllerBase
         ImageManager = imageManager;
     }
 
-    [HttpPost(Name = "MoveImages")]
+    // [HttpPost("MoveImagesPath")]
+    // public IEnumerable<ImageFile> Post(String path)
+    // {
+    //     var ImageFiles = new List<ImageFile>();
+    //     ImageManager.MoveImages(path);
+    //     return ImageFiles;
+    // }
+
+    [HttpPost("MoveImages")]
     public IEnumerable<ImageFile> Post()
     {
         var ImageFiles = new List<ImageFile>();
@@ -23,6 +31,11 @@ public class ImageController : ControllerBase
         return ImageFiles;
     }
 
+    [HttpPost("InsertDatabase")]
+    public void Post(String pathImages)
+    {        
+        ImageManager.InsertDatabase(pathImages);     
+    }
 
     [HttpGet(Name = "GetImages")]
     public IEnumerable<ImageFile> Get()

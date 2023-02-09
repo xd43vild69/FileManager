@@ -5,3 +5,8 @@
 staticwebassets.pack.sentinel
 obj/staticwebassets.pack.sentinel
 obj/*
+appsettings.json
+bin/Debug/net6.0/appsettings.json
+appsettings.json
+bin/Debug/net6.0/appsettings.json
+appsettings.json
