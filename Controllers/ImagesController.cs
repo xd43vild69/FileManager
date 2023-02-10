@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Model;
+using DTO;
 using Domain;
 
 namespace ManageImages.Controllers;
@@ -23,25 +23,25 @@ public class ImageController : ControllerBase
     //     return ImageFiles;
     // }
 
-    [HttpPost("MoveImages")]
-    public IEnumerable<ImageFile> Post()
-    {
-        var ImageFiles = new List<ImageFile>();
-        ImageManager.MoveImages();
-        return ImageFiles;
-    }
+    // [HttpPost("MoveImages")]
+    // public IEnumerable<Image> Post()
+    // {
+    //     var images = new List<Image>();
+    //     ImageManager.MoveImages();
+    //     return images;
+    // }
 
     [HttpPost("InsertDatabase")]
-    public void Post(String pathImages)
+    public void Post()
     {        
-        ImageManager.InsertDatabase(pathImages);     
+        ImageManager.InsertDatabase();     
     }
 
     [HttpGet(Name = "GetImages")]
-    public IEnumerable<ImageFile> Get()
+    public IEnumerable<Image> Get()
     {
-        var ImageFiles = new List<ImageFile>();
+        var images = new List<Image>();
         ImageManager.MoveImages();
-        return ImageFiles;
+        return images;
     }
 }

@@ -1,3 +1,4 @@
+using System.Data;
 using DTO;
 using Microsoft.Data.SqlClient;
 
@@ -7,10 +8,12 @@ public class RepositoryImages<T> : IRepository<T> where T : Image, new()
 {
 
     private readonly IConfiguration Configuration;
-
+    private readonly string? ConnectionString;
     public RepositoryImages(IConfiguration configuration)
     {
         Configuration = configuration;
+        ConnectionString = Configuration.GetConnectionString("dbTest2023");
+        // $"{Configuration["ConnectionString"]}";
     }
 
     public void Delete(int id)
@@ -57,7 +60,7 @@ public class RepositoryImages<T> : IRepository<T> where T : Image, new()
 
                 builder.DataSource = "dbTest2023.mssql.somee.com";
                 builder.UserID = "xdavidgomez13_SQLLogin_1";
-                builder.Password = $"{Configuration["Password"]}";;
+                builder.Password = $"{Configuration["Password"]}";
                 builder.InitialCatalog = "dbTest2023";
                 builder.TrustServerCertificate = true;
 
@@ -86,19 +89,30 @@ public class RepositoryImages<T> : IRepository<T> where T : Image, new()
             {
                 Console.WriteLine(e.ToString());
             }
-            Console.WriteLine("\nDone. Press enter.");
-            Console.ReadLine();
+            // Console.WriteLine("\nDone. Press enter.");
+            // Console.ReadLine();
         }
         return null;
     }
 
     public void Insert(T entity)
     {
-        // using (var db = new SALContext())
-        // {
-        //     db.Entry(entity).State = System.Data.Entity.EntityState.Added;
-        //     db.SaveChanges();
-        // }
+
+        using(var conn = new SqlConnection(ConnectionString)){
+            conn.Open();
+            var command = new SqlCommand();
+            command.CommandType = CommandType.StoredProcedure;
+            command.Connection = conn;
+            command.CommandText = "InsertImages";
+
+            command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)).Value = entity.Name;
+            command.Parameters.Add(new SqlParameter("@Path", SqlDbType.VarChar)).Value = entity.Path;
+            command.Parameters.Add(new SqlParameter("@LastModified", SqlDbType.VarChar)).Value = entity.LastModified;
+            command.Parameters.Add(new SqlParameter("@Created", SqlDbType.DateTime)).Value = entity.Created;
+            command.Parameters.Add(new SqlParameter("@Tag", SqlDbType.VarChar)).Value = entity.Tag;
+            command.ExecuteNonQuery();
+            conn.Close();
+        }
     }
 
     public void Update(T entidad)

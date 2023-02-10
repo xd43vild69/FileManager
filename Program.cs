@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Domain;
+using Repositories;
+using DTO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IImageManager, ImageManager>();
+builder.Services.AddScoped<IRepository<Image>, RepositoryImages<Image>>(); 
 
 var app = builder.Build();
 

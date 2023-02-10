@@ -1,4 +1,4 @@
-using Model;
+using DTO;
 using MetadataExtractor;
 using Directory = System.IO.Directory;
 using System.Text.RegularExpressions;
@@ -9,30 +9,56 @@ namespace Domain;
 public class ImageManager : IImageManager
 {
     private readonly IConfiguration Configuration;
-    private ImageFile? ImageFile { get; set; }
+    private readonly IRepository<Image> Repository;
+    private Image? ImageFile { get; set; }
     const string imagePrefixName = "_img";
     const string folderOutput = "Output";
     private string path;
     private readonly string pathOutput;
 
-    public ImageManager(IConfiguration configuration)
+    public ImageManager(IConfiguration configuration, IRepository<Image> repository)
     {
         Configuration = configuration;
+        Repository = repository;
         path = $"{Configuration["PathFiles"]}";
         pathOutput = @$"{folderOutput}";
     }
 
-    public void InsertDatabase(String path){
-        
+    public void InsertDatabase()
+    {
+
+
+        //TODO Read files from tree path recursively
+
         // Read files from path
-        
+        var searchPattern = new Regex(@"$(?<=\.(jpg|jpeg))");
+        DirectoryInfo directoryInfo = new DirectoryInfo(path);
+        List<string> filePaths = Directory.GetFiles(@$"{path}").Where(file => searchPattern.IsMatch(file)).ToList();
+        List<FileInfo> files = new List<FileInfo>();
+
+        files.AddRange(directoryInfo.GetFiles());
+        IEnumerable<FileInfo> filesSorted = files.OrderBy(x => x.CreationTime).ToList();
+
         // sort datasets
+        if (filesSorted.Count() == 0) return;
 
-        // TODO: Refactor DI
-        var repositoryImages = new RepositoryImages<Image>(Configuration);
-        repositoryImages.GetLists();
+        foreach (var f in filesSorted)
+        {
+            //Send all the images to insert into the DB
+            var image = new Image()
+            {
+                Name = f.Name, 
+                Path = path,
+                Created = f.CreationTime,                              
+                LastModified = f.LastAccessTime,
+                Tag = "X",   
+            };
 
-        // Insert DB
+            // TODO: Automapper
+            Repository.Insert(image);
+        }
+
+        //Repository.GetLists();
 
     }
 
@@ -48,9 +74,6 @@ public class ImageManager : IImageManager
         try
         {
             var searchPattern = new Regex(@"$(?<=\.(jpg|jpeg))");
-
-            string[] allowedExtensions = new[] { ".jpeg", ".jpg" };
-            //string[] filePaths = Directory.GetFiles(path, "*.jpg");
             List<string> filePaths = Directory.GetFiles(@$"{path}").Where(file => searchPattern.IsMatch(file)).ToList();
 
             var counter = 1;
