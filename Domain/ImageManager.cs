@@ -1,9 +1,10 @@
+
 using DTO;
 using MetadataExtractor;
 using Directory = System.IO.Directory;
 using System.Text.RegularExpressions;
 using Repositories;
-using DTO;
+
 namespace Domain;
 
 public class ImageManager : IImageManager
