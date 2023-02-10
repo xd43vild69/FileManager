@@ -26,20 +26,17 @@ public class ImageManager : IImageManager
 
     public void InsertDatabase()
     {
+        
+        DirectoryInfo directoryInfo = new DirectoryInfo(path);                
+        List<string> filePaths = Directory.GetFiles(@$"{path}", "*.*", SearchOption.AllDirectories ).Where(s => s.EndsWith(".jpg") || s.EndsWith(".jpeg")).ToList();
 
-
-        //TODO Read files from tree path recursively
-
-        // Read files from path
-        var searchPattern = new Regex(@"$(?<=\.(jpg|jpeg))");
-        DirectoryInfo directoryInfo = new DirectoryInfo(path);
-        List<string> filePaths = Directory.GetFiles(@$"{path}").Where(file => searchPattern.IsMatch(file)).ToList();
         List<FileInfo> files = new List<FileInfo>();
 
-        files.AddRange(directoryInfo.GetFiles());
+        files.AddRange(directoryInfo.GetFiles("*.*", SearchOption.AllDirectories)
+                        .Where(f => f.Extension == ".jpeg" || f.Extension == ".jpg"));
+
         IEnumerable<FileInfo> filesSorted = files.OrderBy(x => x.CreationTime).ToList();
 
-        // sort datasets
         if (filesSorted.Count() == 0) return;
 
         foreach (var f in filesSorted)
@@ -57,9 +54,6 @@ public class ImageManager : IImageManager
             // TODO: Automapper
             Repository.Insert(image);
         }
-
-        //Repository.GetLists();
-
     }
 
     public void MoveImages(String pathRequest)
