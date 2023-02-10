@@ -45,7 +45,7 @@ public class ImageManager : IImageManager
             var image = new Image()
             {
                 Name = f.Name, 
-                Path = path,
+                Path = f.FullName,
                 Created = f.CreationTime,                              
                 LastModified = f.LastAccessTime,
                 Tag = "X",   

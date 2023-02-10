@@ -111,7 +111,6 @@ public class RepositoryImages<T> : IRepository<T> where T : Image, new()
             command.Parameters.Add(new SqlParameter("@Created", SqlDbType.DateTime)).Value = entity.Created;
             command.Parameters.Add(new SqlParameter("@Tag", SqlDbType.VarChar)).Value = entity.Tag;
             command.ExecuteNonQuery();
-            conn.Close();
         }
     }
 
