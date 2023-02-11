@@ -17,6 +17,7 @@ public class ImageManager : IImageManager
     const string imagePrefixName = "_img";
     const string folderOutput = "Output";
     const string tag = "Stock";
+    const string folderOthers = "OutputOthers";
     private string path;
     private readonly string pathOutput;
 
@@ -135,52 +136,54 @@ public class ImageManager : IImageManager
     }
     public void SortingExifFiles()
     {
-        //Get files
-        //Get exif
-        //Create new structure folders - YYYY-MM-DD
-        //Move Files
-        //FileInfo f = new FileInfo("");
-        //"PathFiles": "D:\\3.images\\ph\\ph-old\\models\\V\\Valpiria",
         DirectoryInfo directoryInfo = new DirectoryInfo(path);
-        List<string> filePaths = Directory.GetFiles(@$"{path}", "*.*", SearchOption.AllDirectories).Where(s => s.EndsWith(".cr2") || s.EndsWith(".jpg")).ToList();
-
         List<FileInfo> files = new List<FileInfo>();
 
-        files.AddRange(directoryInfo.GetFiles("*.*", SearchOption.AllDirectories)
-                        .Where(f => f.Extension.ToLower() == ".cr2".ToLower()
-                        || f.Extension.ToLower() == ".jpeg".ToLower()
-                        || f.Extension.ToLower() == ".jpg".ToLower()));
+        // files.AddRange(directoryInfo.GetFiles("*.*", SearchOption.AllDirectories)
+        //                 .Where(f => f.Extension.ToLower() == ".cr2".ToLower()
+        //                 || f.Extension.ToLower() == ".jpeg".ToLower()
+        //                 || f.Extension.ToLower() == ".jpg".ToLower()));
+
+        files.AddRange(directoryInfo.GetFiles("*.*", SearchOption.AllDirectories));
 
         IEnumerable<FileInfo> filesSorted = files.OrderBy(x => x.CreationTime).ToList();
 
         if (filesSorted.Count() == 0) return;
 
+        CreateFolder(@$"{path}\\{folderOutput}");
+
         var counter = 1;
 
         foreach (var item in filesSorted)
         {
-            var metadata = ImageMetadataReader.ReadMetadata(item.FullName);
-
+            IReadOnlyList<MetadataExtractor.Directory> metadata;
             DateTime dateTaken;
 
-            if (item.Extension.ToLower() == ".jpg")
+            if (item.Extension.ToLower() == ".jpg" 
+            || item.Extension.ToLower() == ".jpeg")
             {
-                DateTime.TryParseExact(metadata[1].Tags[6].Description, "yyyy:MM:dd HH:mm:ss", CultureInfo.CurrentCulture, DateTimeStyles.None, out dateTaken);
+                metadata = ImageMetadataReader.ReadMetadata(item.FullName);
+                if(metadata[1].Tags.Count >= 7){
+                    DateTime.TryParseExact(metadata[1].Tags[6].Description, "yyyy:MM:dd HH:mm:ss", CultureInfo.CurrentCulture, DateTimeStyles.None, out dateTaken);
+                }else{
+                    dateTaken = item.LastWriteTime;    
+                }                
             }
-            else if(item.Extension.ToLower() == ".cr2")
+            else if (item.Extension.ToLower() == ".cr2")
             {
+                metadata = ImageMetadataReader.ReadMetadata(item.FullName);
                 DateTime.TryParseExact(metadata[0].Tags[12].Description, "yyyy:MM:dd HH:mm:ss", CultureInfo.CurrentCulture, DateTimeStyles.None, out dateTaken);
-            }else{
-                CreateFolder($"{path}\\f_others");
-                File.Move($"{item.FullName}", $"{path}\\f_others\\{counter}_{item.Name}");
-                continue;
+            }
+            else
+            {
+                dateTaken = item.LastWriteTime;
             }
 
             var dateImage = dateTaken.ToString("yyyy-MM-dd");
 
-            CreateFolder($"{path}\\f_{dateImage}");
-            
-            File.Move($"{item.FullName}", $"{path}\\f_{dateImage}\\{counter}_{item.Name}");
+            CreateFolder($"{path}\\{folderOutput}\\f_{dateImage}");
+
+            File.Move($"{item.FullName}", $"{path}\\{folderOutput}\\f_{dateImage}\\{item.Name}");
             counter++;
         }
 
@@ -192,7 +195,6 @@ public class ImageManager : IImageManager
         {
             Directory.CreateDirectory($"{path}\\");
         }
-
     }
 
 }
