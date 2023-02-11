@@ -31,10 +31,16 @@ public class ImageController : ControllerBase
     //     return images;
     // }
 
-    [HttpPost("InsertDatabase")]
+    // [HttpPost("InsertDatabase")]
+    // public void Post()
+    // {        
+    //     ImageManager.InsertDatabase();     
+    // }
+
+    [HttpPost("SortExifFiles")]
     public void Post()
     {        
-        ImageManager.InsertDatabase();     
+        ImageManager.SortingExifFiles();     
     }
 
     [HttpGet(Name = "GetImages")]

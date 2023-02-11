@@ -5,4 +5,5 @@ public interface IImageManager{
     public void MoveImages();
     public void MoveImages(String path);    
     public void InsertDatabase();
+    public void SortingExifFiles();
 }

@@ -4,6 +4,8 @@ using MetadataExtractor;
 using Directory = System.IO.Directory;
 using System.Text.RegularExpressions;
 using Repositories;
+using MetadataExtractor;
+using System.Globalization;
 
 namespace Domain;
 
@@ -14,6 +16,7 @@ public class ImageManager : IImageManager
     private Image? ImageFile { get; set; }
     const string imagePrefixName = "_img";
     const string folderOutput = "Output";
+    const string tag = "Stock";
     private string path;
     private readonly string pathOutput;
 
@@ -27,9 +30,9 @@ public class ImageManager : IImageManager
 
     public void InsertDatabase()
     {
-        
-        DirectoryInfo directoryInfo = new DirectoryInfo(path);                
-        List<string> filePaths = Directory.GetFiles(@$"{path}", "*.*", SearchOption.AllDirectories ).Where(s => s.EndsWith(".jpg") || s.EndsWith(".jpeg")).ToList();
+
+        DirectoryInfo directoryInfo = new DirectoryInfo(path);
+        List<string> filePaths = Directory.GetFiles(@$"{path}", "*.*", SearchOption.AllDirectories).Where(s => s.EndsWith(".jpg") || s.EndsWith(".jpeg")).ToList();
 
         List<FileInfo> files = new List<FileInfo>();
 
@@ -42,17 +45,16 @@ public class ImageManager : IImageManager
 
         foreach (var f in filesSorted)
         {
-            //Send all the images to insert into the DB
+            // TODO: Automapper
             var image = new Image()
             {
-                Name = f.Name, 
+                Name = f.Name,
                 Path = f.FullName,
-                Created = f.CreationTime,                              
+                Created = f.CreationTime,
                 LastModified = f.LastAccessTime,
-                Tag = "X",   
+                Tag = tag,
             };
 
-            // TODO: Automapper
             Repository.Insert(image);
         }
     }
@@ -65,7 +67,6 @@ public class ImageManager : IImageManager
 
     public void MoveImages()
     {
-
         try
         {
             var searchPattern = new Regex(@"$(?<=\.(jpg|jpeg))");
@@ -89,10 +90,7 @@ public class ImageManager : IImageManager
                 if (File.Exists($"{pathOutput}{topFolder}\\{f.Name}"))
                     File.Delete($"{pathOutput}{topFolder}\\{f.Name}");
 
-                if (!Directory.Exists($"{path}\\{pathOutput}{topFolder}\\"))
-                {
-                    Directory.CreateDirectory($"{path}\\{pathOutput}{topFolder}\\");
-                }
+                CreateFolder($"{path}\\{pathOutput}{topFolder}\\");
 
                 // Move the file.
                 File.Move($"{path}\\{f.Name}", $"{path}\\{pathOutput}{topFolder}\\{counter}{imagePrefixName}{f.Extension}");
@@ -135,4 +133,66 @@ public class ImageManager : IImageManager
             }
         }
     }
+    public void SortingExifFiles()
+    {
+        //Get files
+        //Get exif
+        //Create new structure folders - YYYY-MM-DD
+        //Move Files
+        //FileInfo f = new FileInfo("");
+        //"PathFiles": "D:\\3.images\\ph\\ph-old\\models\\V\\Valpiria",
+        DirectoryInfo directoryInfo = new DirectoryInfo(path);
+        List<string> filePaths = Directory.GetFiles(@$"{path}", "*.*", SearchOption.AllDirectories).Where(s => s.EndsWith(".cr2") || s.EndsWith(".jpg")).ToList();
+
+        List<FileInfo> files = new List<FileInfo>();
+
+        files.AddRange(directoryInfo.GetFiles("*.*", SearchOption.AllDirectories)
+                        .Where(f => f.Extension.ToLower() == ".cr2".ToLower()
+                        || f.Extension.ToLower() == ".jpeg".ToLower()
+                        || f.Extension.ToLower() == ".jpg".ToLower()));
+
+        IEnumerable<FileInfo> filesSorted = files.OrderBy(x => x.CreationTime).ToList();
+
+        if (filesSorted.Count() == 0) return;
+
+        var counter = 1;
+
+        foreach (var item in filesSorted)
+        {
+            var metadata = ImageMetadataReader.ReadMetadata(item.FullName);
+
+            DateTime dateTaken;
+
+            if (item.Extension.ToLower() == ".jpg")
+            {
+                DateTime.TryParseExact(metadata[1].Tags[6].Description, "yyyy:MM:dd HH:mm:ss", CultureInfo.CurrentCulture, DateTimeStyles.None, out dateTaken);
+            }
+            else if(item.Extension.ToLower() == ".cr2")
+            {
+                DateTime.TryParseExact(metadata[0].Tags[12].Description, "yyyy:MM:dd HH:mm:ss", CultureInfo.CurrentCulture, DateTimeStyles.None, out dateTaken);
+            }else{
+                CreateFolder($"{path}\\f_others");
+                File.Move($"{item.FullName}", $"{path}\\f_others\\{counter}_{item.Name}");
+                continue;
+            }
+
+            var dateImage = dateTaken.ToString("yyyy-MM-dd");
+
+            CreateFolder($"{path}\\f_{dateImage}");
+            
+            File.Move($"{item.FullName}", $"{path}\\f_{dateImage}\\{counter}_{item.Name}");
+            counter++;
+        }
+
+    }
+
+    private void CreateFolder(string path)
+    {
+        if (!Directory.Exists($"{path}\\"))
+        {
+            Directory.CreateDirectory($"{path}\\");
+        }
+
+    }
+
 }
