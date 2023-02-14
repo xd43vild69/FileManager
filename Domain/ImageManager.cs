@@ -4,7 +4,6 @@ using MetadataExtractor;
 using Directory = System.IO.Directory;
 using System.Text.RegularExpressions;
 using Repositories;
-using MetadataExtractor;
 using System.Globalization;
 
 namespace Domain;
@@ -12,7 +11,7 @@ namespace Domain;
 public class ImageManager : IImageManager
 {
     private readonly IConfiguration Configuration;
-    private readonly IRepository<Image> Repository;
+    private readonly AbstractRepository Repository;
     private Image? ImageFile { get; set; }
     const string imagePrefixName = "_img";
     const string folderOutput = "Output";
@@ -21,7 +20,7 @@ public class ImageManager : IImageManager
     private string path;
     private readonly string pathOutput;
 
-    public ImageManager(IConfiguration configuration, IRepository<Image> repository)
+    public ImageManager(IConfiguration configuration, AbstractRepository repository)
     {
         Configuration = configuration;
         Repository = repository;

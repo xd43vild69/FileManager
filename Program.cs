@@ -10,8 +10,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+// Duplicate here any configuration sources you use.
+configurationBuilder.AddJsonFile("AppSettings.json");
+IConfiguration configuration = configurationBuilder.Build();
+
 builder.Services.AddScoped<IImageManager, ImageManager>();
-builder.Services.AddScoped<IRepository<Image>, RepositoryImages<Image>>(); 
+//builder.Services.AddScoped<IRepository<Image>, RepositoryImages<Image>>(); 
+builder.Services.AddScoped<AbstractRepository> (_ => new RepositoryImages(configuration));
 
 var app = builder.Build();
 
